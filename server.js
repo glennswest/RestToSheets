@@ -1,3 +1,4 @@
+var cron = require('node-cron');
 var changeCase = require('change-case');
 var restify = require('restify');
 var util = require('util');
@@ -16,10 +17,18 @@ var cc       = require('config-multipaas'),
 var config   = cc();
 var app      = Router()
 
+// Get the variables from the environment
+var thedoc = process.env.SPREADSHEET_DOC;
+var theauth = process.env.GOOGLE_AUTH;
+var theurl  = process.env.RESTURL;
+var thecron = process.env.RESTCRON;
+
 var GoogleSpreadsheet = require('google-spreadsheet');
-doc = new GoogleSpreadsheet('1UUpfeHLrl59rYUywu0RPJLTqw1LOW8jX7LLaSbI2VBc');
+
+doc = new GoogleSpreadsheet(thedoc);
 sheet = {};
-var creds = require('./google-generated-creds.json');
+//var creds = require('./google-generated-creds.json');
+var creds = JSON.parse(theauth);
 
 restdata = {};
 updateneeded  = 0;
@@ -29,7 +38,12 @@ xsize = 0;
 ysize = 0;
 
 
-var client = restify.createJsonClient({ url: 'https://pp.engineering.redhat.com/pp-admin/api/v1/releases/?fields=id%2Cshortname%2Cname%2Cga_date%2Cbu%2Cbu_shortname%2Cbu_name&format=json', rejectUnauthorized: false});
+cjc = {};
+cjc['url'] = theurl;
+cjc['rejectUnauthorized'] = false;
+//var client = restify.createJsonClient({ url: 'https://pp.engineering.redhat.com/pp-admin/api/v1/releases/?fields=id%2Cshortname%2Cname%2Cga_date%2Cbu%2Cbu_shortname%2Cbu_name&format=json', rejectUnauthorized: false});
+
+var client = restify.createJsonClient(cjc);
 
 
 // Serve up public/ftp folder 
@@ -60,18 +74,6 @@ server.listen(config.get('PORT'), config.get('IP'), function () {
 });
 
 
-//{ id: 'https://spreadsheets.google.com/feeds/worksheets/1UUpfeHLrl59rYUywu0RPJLTqw1LOW8jX7LLaSbI2VBc/private/full',
-//  title: 'cbdp',
-//  updated: '2017-02-08T07:26:58.667Z',
-//  author: 
-//   { name: 'glennswest',
-//     email: 'glennswest@neuralcloudcomputing.com' },
-//  worksheets: 
-//   [ { url: 'https://spreadsheets.google.com/feeds/worksheets/1UUpfeHLrl59rYUywu0RPJLTqw1LOW8jX7LLaSbI2VBc/od6',
-//       id: 'od6',
-//       title: 'Sheet1',
-//       rowCount: 1000,
-//       colCount: 26,
 
 function find_sheet(doc,name)
 {
@@ -111,27 +113,19 @@ function update_cell(cells,x,y,value)
     cells[offset].value = value;
 }
 
-//{ id: 893,
-//    shortname: 'mapc-3-16.0',
-//    name: 'Red Hat Mobile Application Platform - Hosted - 3.16.0',
-//    ga_date: '2017-02-27',
-//    bu: '10',
-//    bu_shortname: 'mobile',
-//    bu_name: 'Mobile' },
-
 function update_google_done()
 {
 console.log("update_google_done");
-console.log(util.inspect(arguments));
+//console.log(util.inspect(arguments));
 }
 
 function update_google_cells(err,cells)
 {
 var d = new Date();
      
-     console.log("Updating Google cell");
-     console.log("Xsize = " + xsize + "Ysize = " + ysize );
-     console.log("Err " + util.inspect(err));
+     console.log("Updating Google cell - " + util.inspect(d));
+     //console.log("Xsize = " + xsize + "Ysize = " + ysize );
+     //console.log("Err " + util.inspect(err));
      //console.log(util.inspect(restdata));
      //console.log(util.inspect(cells));
      // Fix up headers
@@ -166,7 +160,7 @@ function update_google_getdata()
     cellctl["min-row"] = 1;
     cellctl["max-row"] = ysize;
     cellctl["return-empty"] = true;
-    console.log(util.inspect(cellctl));
+    //console.log(util.inspect(cellctl));
     sheet.getCells(cellctl,update_google_cells);
 }
 
@@ -184,9 +178,9 @@ function google_info(err,info)
 {
 console.log("google_info");
 
-console.log(util.inspect(info));
+//console.log(util.inspect(info));
 sheet = find_sheet(info,'Sheet1');
-console.log(util.inspect(sheet));
+//console.log(util.inspect(sheet));
 if (newxsize != sheet.rowCount) update_needed = 1;
 if (newysize != sheet.colCount) update_needed = 1;
 
@@ -197,7 +191,7 @@ if (update_needed == 1){
 }
 function updatedata()
 {
-console.log(util.inspect(arguments));
+//console.log(util.inspect(arguments));
 console.log("Update Data");
 doc.getInfo(google_info);
 }
@@ -212,11 +206,11 @@ function update_rest_data(){
 
 	client.get(URL,
          	   function(err, req, res, obj){
-        	       console.log(util.inspect(err));
+        	       //console.log(util.inspect(err));
                        newxsize = _.size(obj[1]);
                        newysize = obj.length;
-                       console.log("Length = " + newysize);
-                       console.log("Width = " +  newxsize);
+                       //console.log("Length = " + newysize);
+                       //console.log("Width = " +  newxsize);
                        updated_needed = 0;
                        if (newxsize != xsize) update_needed = 1;
                        if (newysize != ysize) update_needed = 1;
@@ -226,5 +220,7 @@ function update_rest_data(){
                        } );
 }
 
-update_rest_data();
+// thecron = '0 * * * *' = every hour
+// thecron = '* * * * *' = every minute
+cron.schedule(thecron,update_rest_data);
 
