@@ -1,26 +1,39 @@
 {
-  "name": "pillar-base",
-  "description": "A basic pillarjs server example. Find out more about pillarjs at http://pillarjs.github.io/",
+  "name": "cbdp",
+  "description": "Cloud BU Data Pusher at https://github.com/glennswest/cbdp.git",
   "version": "0.0.1",
   "private": false,
   "engines": {
-    "node": "0.10.x",
-    "npm": "1.2.x"
+    "node": "4.7.x",
+    "npm": "2.15.x"
   },
   "dependencies": {
+    "async": "^2.1.4",
+    "change-case": "^3.0.1",
     "config-multipaas": "^0.2.2",
+    "finalhandler": "^0.5.1",
+    "fs": "0.0.1-security",
+    "google-auth-library": "^0.10.0",
+    "google-sheets-node-api": "^0.3.0",
+    "google-spreadsheet": "^2.0.3",
+    "googleapis": "^16.1.0",
+    "json2xls": "^0.1.2",
+    "lodash": "^4.17.4",
+    "node-datetime": "^1.0.0",
+    "node-stringify": "0.0.19",
+    "restify": "^4.3.0",
     "router": "^1.1.4",
-    "send": "^0.13.2",
+    "send": "^0.14.2",
     "serve-static": "^1.10.2",
-    "finalhandler": "^0.4.1"
+    "util": "^0.10.3"
   },
   "devDependencies": {
     "gulp": "^3.9.1",
-    "tap": "^5.7.1"
+    "tap": "^10.1.0"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ryanj/pillar-base.git"
+    "url": "https://github.com/glennswest/cbdp.git"
   },
   "scripts": {
     "start": "node server.js"
