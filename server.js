@@ -224,5 +224,7 @@ function update_rest_data(){
 
 // thecron = '0 * * * *' = every hour
 // thecron = '* * * * *' = every minute
+update_rest_data();
+console.log("Starting Auto Schedule Updates based on cron: " + thecron);
 cron.schedule(thecron,update_rest_data);
 
