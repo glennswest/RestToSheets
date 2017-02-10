@@ -7,7 +7,6 @@ var util = require('util');
 var json2xls = require('json2xls');
 var fs = require('fs');
 var async = require('async');
-var URL = "";
 var _ = require('lodash');
 var cc       = require('config-multipaas'),
     finalhandler= require('finalhandler'),
@@ -206,8 +205,10 @@ function do_google(){
 
 function update_rest_data(){
 
-	client.get(URL,
+        console.log("update_rest_data: " + theurl);
+	client.get(theurl,
          	   function(err, req, res, obj){
+                       console.log("Data captured");
         	       //console.log(util.inspect(err));
                        newxsize = _.size(obj[1]);
                        newysize = obj.length;
@@ -217,7 +218,6 @@ function update_rest_data(){
                        if (newxsize != xsize) update_needed = 1;
                        if (newysize != ysize) update_needed = 1;
                        restdata = obj;
-                       console.log("Data captured");
                        do_google();
                        } );
 }
