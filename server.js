@@ -205,7 +205,7 @@ function do_google(){
 
 function update_rest_data(){
 
-        console.log("update_rest_data: " + theurl);
+        console.log("update_rest_data:" + theurl);
 	client.get(theurl,
          	   function(err, req, res, obj){
                        console.log("Data captured");
