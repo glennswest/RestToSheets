@@ -1,3 +1,4 @@
+var unquote = require('unquote');
 var base64 = require('base-64');
 var cron = require('node-cron');
 var changeCase = require('change-case');
@@ -22,7 +23,7 @@ var app      = Router()
 var thedoc = process.env.SPREADSHEET_DOC;
 var theauth = process.env.GOOGLE_AUTH;
 var theurl  = process.env.RESTURL;
-var thecron = process.env.RESTCRON;
+var thecron = unquote(process.env.RESTCRON);
 
 var GoogleSpreadsheet = require('google-spreadsheet');
 
