@@ -1,3 +1,4 @@
+var base64 = require('base-64');
 var cron = require('node-cron');
 var changeCase = require('change-case');
 var restify = require('restify');
@@ -28,7 +29,7 @@ var GoogleSpreadsheet = require('google-spreadsheet');
 doc = new GoogleSpreadsheet(thedoc);
 sheet = {};
 //var creds = require('./google-generated-creds.json');
-var creds = JSON.parse(theauth);
+var creds = JSON.parse(base64.decode(theauth));
 
 restdata = {};
 updateneeded  = 0;

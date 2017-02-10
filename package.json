@@ -10,6 +10,7 @@
   "dependencies": {
     "assert-plus": "^1.0.0",
     "async": "^2.1.4",
+    "base-64": "^0.1.0",
     "change-case": "^3.0.1",
     "config-multipaas": "^0.2.2",
     "finalhandler": "^0.5.1",
