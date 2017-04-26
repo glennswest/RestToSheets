@@ -23,6 +23,7 @@ var thedoc = process.env.SPREADSHEET_DOC;
 var theauth = process.env.GOOGLE_AUTH;
 var theurl  = process.env.RESTURL;
 var thecron = unquote(process.env.RESTCRON);
+var theselfurl = process.env.SELFURL;
 
 var GoogleSpreadsheet = require('google-spreadsheet');
 
@@ -42,13 +43,19 @@ ysize = 0;
 cjc = {};
 cjc['url'] = theurl;
 cjc['rejectUnauthorized'] = false;
-//var client = restify.createJsonClient({ url: 'https://pp.engineering.redhat.com/pp-admin/api/v1/releases/?fields=id%2Cshortname%2Cname%2Cga_date%2Cbu%2Cbu_shortname%2Cbu_name&format=json', rejectUnauthorized: false});
+
+wakeup = {}'
+wakeup['url'] = theselfurl;
+wakeup['rejectUnauthorized'] = false;
+
 
 var client = restify.createJsonClient(cjc);
+var wakeup = restify.createJsonClient(wakeup);
 
 
 // Serve up public/ftp folder 
 app.use(serveStatic('static'))
+
 
 // Routes
 app.get("/status", function (req, res) {
@@ -75,6 +82,14 @@ server.listen(config.get('PORT'), config.get('IP'), function () {
 });
 
 
+function wakeup_call()
+{
+        wakeup.get(theselfurl,function(){});
+         
+	setTimeout(wakeup_call, 1000*3600);
+}
+
+wakeup_call();
 
 function find_sheet(doc,name)
 {
