@@ -23,10 +23,13 @@ var thedoc = process.env.SPREADSHEET_DOC;
 var theauth = process.env.GOOGLE_AUTH;
 var theurl  = process.env.RESTURL;
 var thecron = unquote(process.env.RESTCRON);
-var theselfurl = process.env.SELFURL;
+try {
+    var theselfurl = process.env.SELFURL;
+ }  catch (err) {
+    console.log("SELFURL environment variable not set");
+ }
 
 var GoogleSpreadsheet = require('google-spreadsheet');
-
 doc = new GoogleSpreadsheet(thedoc);
 sheet = {};
 //var creds = require('./google-generated-creds.json');
@@ -84,8 +87,11 @@ server.listen(config.get('PORT'), config.get('IP'), function () {
 
 function wakeup_call()
 {
+        try {
         wakeup.get(theselfurl,function(){});
-         
+        } catch (err) {
+          console.log("Error on doing wakeup call");
+        }
 	setTimeout(wakeup_call, 1000*3600);
 }
 
