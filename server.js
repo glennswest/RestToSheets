@@ -62,6 +62,7 @@ app.use(serveStatic('static'))
 
 // Routes
 app.get("/status", function (req, res) {
+  console.log("Status Check OK");
   res.statusCode = 200
   res.setHeader('Content-Type', 'application/json; charset=utf-8')
   res.end("{status: 'ok'}\n")
