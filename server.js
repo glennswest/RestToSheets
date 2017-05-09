@@ -47,7 +47,7 @@ cjc = {};
 cjc['url'] = theurl;
 cjc['rejectUnauthorized'] = false;
 
-wakeup = {}'
+wakeup = {};
 wakeup['url'] = theselfurl;
 wakeup['rejectUnauthorized'] = false;
 
