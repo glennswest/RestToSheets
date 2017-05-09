@@ -93,7 +93,7 @@ function wakeup_call()
         } catch (err) {
           console.log("Error on doing wakeup call");
         }
-	setTimeout(wakeup_call, 600);
+	setTimeout(wakeup_call, 600000 );
 }
 
 wakeup_call();
